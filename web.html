@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--tg-theme-text-color);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--tg-theme-text-color);
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--tg-theme-hint-color, #ccc);
+            border-radius: 8px;
+            font-size: 16px;
+            background: var(--tg-theme-bg-color, #fff);
+            color: var(--tg-theme-text-color, #000);
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--tg-theme-button-color, #3390ec);
+        }
+
+        input.error, textarea.error {
+            border-color: #e74c3c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .hint {
+            font-size: 14px;
+            color: var(--tg-theme-hint-color, #999);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Заполните форму</h1>
+        
+        <form id="mainForm">
+            <div class="form-group">
+                <label for="name">
+                    Имя <span class="required">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    placeholder="Введите ваше имя"
+                    required
+                >
+                <div class="error-message" id="name-error">Это поле обязательно для заполнения</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    Email <span class="required">*</span>
+                </label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="example@email.com"
+                    required
+                >
+                <div class="error-message" id="email-error">Введите корректный email</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">
+                    Телефон <span class="required">*</span>
+                </label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="+7 (999) 123-45-67"
+                    required
+                >
+                <div class="error-message" id="phone-error">Введите корректный номер телефона</div>
+            </div>
+
+            <div class="form-group">
+                <label for="message">
+                    Сообщение (опционально)
+                </label>
+                <textarea 
+                    id="message" 
+                    name="message" 
+                    placeholder="Введите ваше сообщение"
+                ></textarea>
+                <div class="hint">Это поле необязательно</div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const form = document.getElementById('mainForm');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const messageInput = document.getElementById('message');
+
+        // Валидация email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Валидация телефона (простая)
+        function validatePhone(phone) {
+            const cleaned = phone.replace(/\D/g, '');
+            return cleaned.length >= 10;
+        }
+
+        // Показать ошибку
+        function showError(input, errorId, message) {
+            input.classList.add('error');
+            const errorEl = document.getElementById(errorId);
+            if (message) errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        // Скрыть ошибку
+        function hideError(input, errorId) {
+            input.classList.remove('error');
+            document.getElementById(errorId).classList.remove('show');
+        }
+
+        // Валидация формы
+        function validateForm() {
+            let isValid = true;
+
+            // Проверка имени
+            if (!nameInput.value.trim()) {
+                showError(nameInput, 'name-error', 'Это поле обязательно');
+                isValid = false;
+            } else {
+                hideError(nameInput, 'name-error');
+            }
+
+            // Проверка email
+            if (!emailInput.value.trim()) {
+                showError(emailInput, 'email-error', 'Это поле обязательно');
+                isValid = false;
+            } else if (!validateEmail(emailInput.value)) {
+                showError(emailInput, 'email-error', 'Введите корректный email');
+                isValid = false;
+            } else {
+                hideError(emailInput, 'email-error');
+            }
+
+            // Проверка телефона
+            if (!phoneInput.value.trim()) {
+                showError(phoneInput, 'phone-error', 'Это поле обязательно');
+                isValid = false;
+            } else if (!validatePhone(phoneInput.value)) {
+                showError(phoneInput, 'phone-error', 'Введите корректный номер');
+                isValid = false;
+            } else {
+                hideError(phoneInput, 'phone-error');
+            }
+
+            return isValid;
+        }
+
+        // Отправка данных
+        function sendData() {
+            if (validateForm()) {
+                const data = {
+                    name: nameInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    phone: phoneInput.value.trim(),
+                    message: messageInput.value.trim() || undefined
+                };
+
+                tg.sendData(JSON.stringify(data));
+            }
+        }
+
+        // Показать главную кнопку
+        tg.MainButton.setText('Отправить');
+        tg.MainButton.show();
+        tg.MainButton.onClick(sendData);
+
+        // Валидация в реальном времени
+        nameInput.addEventListener('blur', () => {
+            if (nameInput.value.trim()) {
+                hideError(nameInput, 'name-error');
+            }
+        });
+
+        emailInput.addEventListener('blur', () => {
+            if (emailInput.value.trim() && validateEmail(emailInput.value)) {
+                hideError(emailInput, 'email-error');
+            }
+        });
+
+        phoneInput.addEventListener('blur', () => {
+            if (phoneInput.value.trim() && validatePhone(phoneInput.value)) {
+                hideError(phoneInput, 'phone-error');
+            }
+        });
+    </script>
+</body>
+</html>
