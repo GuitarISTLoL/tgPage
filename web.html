@@ -99,12 +99,12 @@
 
       <form id="mainForm">
         <div class="form-group">
-          <label for="name"> Имя <span class="required">*</span> </label>
+          <label for="name"> ФИО <span class="required">*</span> </label>
           <input
             type="text"
             id="name"
             name="name"
-            placeholder="Введите ваше имя"
+            placeholder="Введите ваше ФИО"
             required
           />
           <div class="error-message" id="name-error">
@@ -132,7 +132,7 @@
             type="tel"
             id="phone"
             name="phone"
-            placeholder="+7 (999) 123-45-67"
+            placeholder="8 (999) 123-45-67"
             required
           />
           <div class="error-message" id="phone-error">
@@ -154,7 +154,7 @@
     <script>
       const tg = window.Telegram.WebApp;
 
-      Telegram.WebApp.ready(); // сигнализируем, что WebApp готов
+      Telegram.WebApp.ready(); 
       tg.expand();
 
       const form = document.getElementById("mainForm");
@@ -228,16 +228,14 @@
           message: messageInput.value.trim() || undefined,
         };
 
-        tg.sendData(JSON.stringify(payload)); // отправляем в бота
-        tg.close(); // закрываем окно
+        tg.sendData(JSON.stringify(payload));
+        tg.close(); 
       }
 
-      // Настройка главной кнопки
       tg.MainButton.setText("Отправить");
       tg.MainButton.show();
       tg.MainButton.onClick(sendData);
 
-      // Микро-улучшение UX: прячем ошибку по blur
       nameInput.addEventListener("blur", () => {
         if (nameInput.value.trim()) hideError(nameInput, "name-error");
       });
