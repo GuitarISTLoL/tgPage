@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Форма</title>
+    <title>Form</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
       * {
@@ -95,20 +95,20 @@
   </head>
   <body>
     <div class="container">
-      <h1>Заполните форму</h1>
+      <h1>Fill out the form</h1>
 
       <form id="mainForm">
         <div class="form-group">
-          <label for="name"> ФИО <span class="required">*</span> </label>
+          <label for="name"> Full name <span class="required">*</span> </label>
           <input
             type="text"
             id="name"
             name="name"
-            placeholder="Введите ваше ФИО"
+            placeholder="Full name"
             required
           />
           <div class="error-message" id="name-error">
-            Это поле обязательно для заполнения
+            This field is required.
           </div>
         </div>
 
@@ -122,12 +122,12 @@
             required
           />
           <div class="error-message" id="email-error">
-            Введите корректный email
+            Enter a correct email
           </div>
         </div>
 
         <div class="form-group">
-          <label for="phone"> Телефон <span class="required">*</span> </label>
+          <label for="phone"> Phone <span class="required">*</span> </label>
           <input
             type="tel"
             id="phone"
@@ -136,18 +136,18 @@
             required
           />
           <div class="error-message" id="phone-error">
-            Введите корректный номер телефона
+            Enter a correct phone
           </div>
         </div>
 
         <div class="form-group">
-          <label for="message"> Сообщение (опционально) </label>
+          <label for="message"> Сomment (optional) </label>
           <textarea
             id="message"
             name="message"
             placeholder="Введите ваше сообщение"
           ></textarea>
-          <div class="hint">Это поле необязательно</div>
+          <div class="hint">This field is optional</div>
         </div>
       </form>
     </div>
